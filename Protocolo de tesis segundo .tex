@@ -8,6 +8,7 @@
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{times}
+\usepackage{float}
  
 \usepackage{color}
 \definecolor{gray97}{gray}{.97}
@@ -103,13 +104,39 @@ El tamño de los arreglos es de 1.28 cm x 1.28 cm, hay 500,000 ubicaciones en ca
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=0.5\textwidth]{Genechip.png}
+\includegraphics[width=0.7\textwidth]{Genechip.png}
 \end{center}
 \caption{Chip de un Microarreglo.}
 \end{figure}
 
-\subsubsection{Formato}
+La tecnología de microarreglos se basa en el dogma central de la biología molecular, mide los niveles trascripción en un determinado caso de estudio.
 
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{dogmacentral.png}
+\end{center}
+\caption{Dogma central de la biología}
+\label{dogma}
+\end{figure}
+
+Con la tecnología de los microarreglos se imprimen las secuencias biologicas en un chip, de manera que se puede cuantificar el transcripción en una matriz numérica.	
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{matriz_de_expresion.jpeg}
+\end{center}
+\caption{Matriz de expresión}
+\end{figure}
+
+En cada celda de un chip se pegan miles de copias de un segmento de mRNA (sonda), cada celda contiene secuencias de mRNA distintas, todas las celdas contienen el mismo numero de segmentos.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{matriz_dos.jpeg}
+\end{center}
+\caption{Ejemplo de un chip de microarreglo.}
+\end{figure}
+
+\subsection{Formato}
 Los archivos están disponibles en un formato de valores separados por comas (CSV). Estos son archivos de texto sin formato con cada fila terminada por un carácter de nueva línea. Los datos en campos separados están entre comillas y separados por comas. Ninguno de los campos de datos contiene ninguno de estos caracteres: comillas, nueva línea, retorno de carro o tabulación.\\
 
 Estos archivos se usen principalmente en aplicaciones de hojas de cálculo y programas de bases de datos (como bases de datos SQL). Los datos estan formateados de tal manera que estos dos usos sean relativamente fáciles. Se tiene en cuenta que algunos de los archivos y los campos de datos en ellos son grandes. 
@@ -124,6 +151,8 @@ Los campos vacíos se indican con '- - -' . El hecho de utilizar una cadena de e
 Algunas columnas en algunos archivos no contienen datos. Para ayudar a los usuarios a combinar datos de varios archivos, dichas columnas vacías no se eliminan. Por lo tanto, cada archivo tiene las mismas columnas en el mismo orden.\\
 
 Algunos campos, como "Chip", contienen el mismo valor para cada conjunto de sonda en un archivo. Aunque estos datos son redundantes en cualquier archivo individual, son útiles para los usuarios que combinan datos de varios archivos.
+\subsubsection{Plataformas}
+
 
 \subsection{Metilación} 
 La metilacion del ADN es un proceso epigenético que participa en la regularización de la expresión génica de dos maneras, directamente al impedir la unio de factores de transcripción, e indirectamente proporcionando la estructura "cerrada" de la cromatina.   
@@ -136,213 +165,19 @@ El enfoque de solución ante la problemática planteada, consiste fundamentalmen
 \item Incoporparar Circos plot a la plataforma de Galaxy.
 \item Instalar circos plot galaxy en Instiuto Nacional de Medicina Genómica.
 \end{itemize}
+
 \section{Metodología}
-Circos es complejo de utilizar en su estado nativo, por lo que al automatizarlo se podrá usar de una forma mas sencilla.
+\subsection{Diseño de estudio}
 
-Los pasos a seguir en esta metodología son los siguientes:
-
-\begin{itemize}
-
-%Flujo de trabajo
-\item Instalar Circos plot.
-\item Instalar Galaxy.
-\item Instalar la herramienta de circos galaxy. 
-\item Errores comunes en instalación.
-\item Herramienta de galaxy para obtener formatos de circos.
-\item producto final.
-\end{itemize}
-
-\subsection{Circos plot}.
-
-\textbf{Instalación de circos}
-
-Primero, descargamos Circos \texttt{http://circos.ca/software/download}. El contenido de la distribución se describe a continuación.
-
-No necesitamos mover o editar ningún archivo en la distribución principal.
-
-
-\begin{lstlisting}[language=bash,caption={Suponiendo que desea instalar en ROOT=~/software/circos},style=consola]
-$ cd ~
-$ mkdir software
-$ mkdir software/circos
-$ cd software/circos
-# Descargar Circos y colocalo en el directorio software/circos
-$ wget http://circos.ca/distribution/circos-0.69-6.tgz
-# Descargar la versión mas actual (Recomendación).
-#Descomprime 
-$ tar xvfz circos-0.69-6.tgz
-...
-circos-0.69-6/data/karyotype/karyotype.arabidopsis.txt
-circos-0.69-6/data/karyotype/karyotype.zeamays.txt
-circos-0.69-6/data/karyotype/karyotype.oryzasativa.txt
-# Crea un enlace simbolico a current 
-$ ln -s circos-0.69-6 current
-# Comprobamos si se creo el enlace simbolico.
-$ ls -lh
-drwxrwxr-x 9 juanjo juanjo 4.0K nov 29 10:36 circos-0.69-6/
--rw-rw-r-- 1 juanjo juanjo  22M nov 29 10:36 circos-0.69-6.tgz
-lrwxrwxrwx 1 juanjo juanjo   13 nov 29 10:30 current -> circos-0.69-6/
-# Borramos el archivo tgz, si ustede quiere
-\end{lstlisting}
-Para instalar los módulos GD y Perl en Ubuntu, usamos apt-get.\\
-\begin{lstlisting}[language=bash, style=consola]
-$ sudo apt-get -y install libgd2-xpm-dev
-\end{lstlisting}
-
-\textbf{CORRIENDO CIRCOS}\\ 
-
-Circos utiliza banderas de línea de comandos, que son obligatorias. Por lo menos, debe especificar el archivo de configuración de imagen usando -conf.\\
-
-Es una buena idea agregar el \textbf{bin/} directorio en la distribución para PATH que pueda ejecutar \textbf{bin/circos} desde cualquier lugar.\\
-
-Añadimos al \textbf{root=~/software/circos/current} como se describió anteriormente, añadimos esto a nuestro \textbf{~/.bashrco} \textbf{~/.bash-profile}.\\ 
-
-\begin{lstlisting}[language=bash, style=consola]
-$ export PATH=~/software/circos/current/bin:$PATH
-\end{lstlisting}
-
-Ejecutamos explícitamente cualquiera \textbf{~/.bashrc} \textbf{~/.bash-profile} para que esto surta efecto\\
-\begin{lstlisting}[language=bash, style=consola]
-$ .~/ .bashrc
-# o 
-$ .~/ .bash_profile
-\end{lstlisting}
-
-Finalmente, probamos que nuestro PATH ha sido modificado,\\
-
-\begin{lstlisting}[language=bash, style=consola]
-$ cd ~
-$ echo $PATH
-~/software/circos/current/bin: ...
-$ which circos
-~/software/circos/current/bin/circos
-\end{lstlisting}
-\textbf{Revisando si faltan módulos Perl}\\
-
-Verificamos si tenemos algún módulo faltante\\
-
-\begin{lstlisting}[language=bash, style=consola]
-$ circos -modules
-ok       1.36 Carp
-ok       0.38 Clone
-ok       2.63 Config::General
-ok       3.56 Cwd
-ok      2.158 Data::Dumper
-ok       2.54 Digest::MD5
-ok       2.85 File::Basename
-ok       3.56 File::Spec::Functions
-ok     0.2304 File::Temp
-ok       1.51 FindBin
-ok       0.39 Font::TTF::Font
-ok       2.53 GD
-ok        0.2 GD::Polyline
-ok       2.45 Getopt::Long
-ok       1.16 IO::File
-ok      0.413 List::MoreUtils
-ok       1.41 List::Util
-ok       0.01 Math::Bezier
-ok     1.9997 Math::BigFloat
-ok       0.07 Math::Round
-ok       0.08 Math::VecStat
-ok       1.03 Memoize
-ok    1.53_01 POSIX
-ok       1.26 Params::Validate
-ok       1.64 Pod::Usage
-ok       2.05 Readonly
-ok 2016060801 Regexp::Common
-ok       2.64 SVG
-ok       1.19 Set::IntSpan
-ok     1.6611 Statistics::Basic
-ok    2.53_01 Storable
-ok       1.20 Sys::Hostname
-ok       2.03 Text::Balanced
-ok       0.60 Text::Format
-ok     1.9726 Time::HiRes
-
-\end{lstlisting}
-
-Cuando tenemos estas cosas ya tenemos circos plot instalado en nuestro SO
-
-\subsection{Galaxy}
-
-
-Galaxy es una plataforma abierta basada en la web para la investigación biomédica computacional accesible, reproducible y transparente.\\
-
-\textbf{Accesible:} los usuarios sin experiencia en programación pueden especificar fácilmente parámetros y ejecutar herramientas y flujos de trabajo.\\
-\textbf{Reproducible:} Galaxy captura información para que cualquier usuario pueda repetir y comprender un análisis computacional completo.\\
-\textbf{Transparente:} los usuarios comparten y publican análisis a través de la web y crean páginas, documentos interactivos y basados ​​en la web que describen un análisis completo.\\
-
-Para obtener instalado galaxy necesitamos seguir los pasos siguientes:\\
-
-\textbf{Requisitos}
-\begin{itemize}
-\item UNIX / Linux o Mac OSX
-\item Python 2.7
-\end{itemize}
-
-\textbf{Empezar}\\
-
-Para producción o usuario único\\
-
-\textbf{Clonar Galaxy desde GitHub}\\
-\begin{lstlisting}[language=bash, style=consola]
-$ git clone -b release_17.09 https://github.com/galaxyproject/galaxy.git
-\end{lstlisting}
-
-\textbf{Comenzarlo}
-\\
-Galaxy requiere algunas cosas para ejecutar: un virtualenv, archivos de configuración y módulos dependientes de Python. Sin embargo, iniciar el servidor por primera vez creará / adquirirá estas cosas según sea necesario. Para iniciar Galaxy, simplemente ejecute el siguiente comando en una ventana de terminal:
-\begin{lstlisting}[language=bash, style=consola]
-$ cd ~
-$ cd /galaxy
-# En contadas ocaciones se requiere dara permisos de lectura escritura y ejecución para ello ponmos en terminal:
-$ chmod -R 777 run.sh
-$ sh run.sh
-\end{lstlisting}
-
-\begin{figure}[h]
+\begin{figure}[H]
 \begin{center}
-\includegraphics[width=0.9\textwidth]{run.png}
+\includegraphics[width=0.9\textwidth]{METODOLOGIA.png}
 \end{center}
-\caption{Consola corriendo galaxy.}
+\caption{Metodología}
 \end{figure}
-
-Esto iniciará el servidor Galaxy en el host local y el puerto 8080. Luego se puede acceder a Galaxy desde nuestro navegador web en \textbf{http:// localhost:8080.} Después de comenzar, el servidor de Galaxy imprimirá la salida a la ventana del terminal. Para detener el servidor Galaxy, se puede presionar las  Ctrl+C en la ventana de la terminal desde la que se está ejecutando Galaxy.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=0.9\textwidth]{galaxy.png}
-\end{center}
-\caption{Pantalla principal de Galaxy.}
-\end{figure}
-
-\textbf{Próximos pasos}
-Convertirse en administrador\\
-
-Para controlar Galaxy a través de la interfaz de usuario (instalación de herramientas, administración de usuarios, creación de grupos, etc.), los usuarios deben convertirse en administradores . Solo los usuarios registrados pueden convertirse en administradores. Para otorgar privilegios de administrador a un usuario, se completaron los siguientes pasos:\\
-\begin{itemize}
-\item En el directorio config/ viene el archivo de configuración pero lo encontramos como \textbf{galaxy.ini.sample} pero galaxy no lo reconoce así pero podemos tenerlo simplemente copiarlo como se muestra aqui:\\
-
-\begin{lstlisting}[language=bash, style=consola]
-$ cd /galaxy/config
-$ cp galaxy.ini.sample galaxy.ini
-$ vi galaxy.ini
-\end{lstlisting}
-
-\item Agregamos el correo electrónico de inicio de sesión Galaxy del usuario al archivo de configuración config/galaxy.ini. Como se muestra aquí:\\
-\begin{lstlisting}[language=bash, style=consola]
-# Esta linea viene comentada por lo que hay que descomentarlar y ponemos:
-admin_users = jjmartinez@inmegen.edu.mx
-\end{lstlisting}
-\item Reinicié Galaxy después de modificar el archivo de configuración para que los cambios surtan efecto.
-
-\end{itemize}
 
 \section{Cronograma}
-
-\subsection{Referencias}
-
-
+\section{Referencias}
 TUSHER V. G., TIBSHIRANI R., CHU G. Significance analysis of microarrays applied
 to the ionizing radiation response. Proceedings of the National Academy of Sciences of
 the United States of America, 98(9): 5116-21, 2001 Apr 24.

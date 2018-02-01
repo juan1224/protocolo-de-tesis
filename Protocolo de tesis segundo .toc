@@ -11,11 +11,11 @@
 \contentsline {section}{\numberline {2}Estado del Arte}{2}
 \contentsline {subsection}{\numberline {2.1}Tecnologías Genómicas}{2}
 \contentsline {subsection}{\numberline {2.2}Microarreglos}{3}
-\contentsline {subsubsection}{\numberline {2.2.1}Formato}{3}
-\contentsline {subsection}{\numberline {2.3}Metilación}{4}
-\contentsline {section}{\numberline {3}Propuesta de Solución}{4}
-\contentsline {section}{\numberline {4}Metodología}{4}
-\contentsline {subsection}{\numberline {4.1}Circos plot}{5}
-\contentsline {subsection}{\numberline {4.2}Galaxy}{6}
-\contentsline {section}{\numberline {5}Cronograma}{8}
-\contentsline {subsection}{\numberline {5.1}Referencias}{8}
+\contentsline {subsection}{\numberline {2.3}Formato}{5}
+\contentsline {subsubsection}{\numberline {2.3.1}Plataformas}{6}
+\contentsline {subsection}{\numberline {2.4}Metilación}{6}
+\contentsline {section}{\numberline {3}Propuesta de Solución}{6}
+\contentsline {section}{\numberline {4}Metodología}{7}
+\contentsline {subsection}{\numberline {4.1}Diseño de estudio}{7}
+\contentsline {section}{\numberline {5}Cronograma}{7}
+\contentsline {section}{\numberline {6}Referencias}{7}
